@@ -14,6 +14,10 @@ include __DIR__ . '/includes/header.php';
 <div class="row">
     <?php include __DIR__ . '/includes/sidebar.php'; ?>
     <div class="col-12 col-lg-10">
+        <?php if (($_GET['db'] ?? '') === 'offline'): ?>
+            <div class="alert alert-warning">Entrou em modo de contingência (sem BD). Configure a ligação MySQL para guardar dados de forma permanente.</div>
+        <?php endif; ?>
+
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1 class="h3 mb-0">Cronograma de Marketing</h1>
             <div class="btn-group">

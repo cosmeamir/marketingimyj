@@ -89,3 +89,15 @@ No ficheiro `includes/db.php`, configure os dados da Hostinger (ou variables de 
 - Ativar HTTPS no domínio.
 - Restringir acesso a rotas admin.
 - Fazer backups periódicos da base.
+
+## Troubleshooting: erro 500 ao fazer login (`/actions/login_action.php`)
+Se aparecer **HTTP ERROR 500** na Hostinger, normalmente é problema de base de dados/configuração.
+
+Checklist rápido:
+1. Confirmar que importou `database.sql` na base certa.
+2. Confirmar host, nome, user e password MySQL no `includes/db.php`.
+3. Confirmar permissões do utilizador MySQL para essa base.
+4. No hPanel, validar versão PHP (8.x recomendado) e ativar `mysqli/pdo_mysql`.
+5. Verificar logs de erro da Hostinger (Errors/Logs) para mensagem exata.
+
+O sistema agora evita erro fatal no login: se a BD falhar, mostra aviso e usa modo de contingência temporário.

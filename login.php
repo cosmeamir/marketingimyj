@@ -14,8 +14,13 @@ include __DIR__ . '/includes/header.php';
         <div class="card">
             <div class="card-body">
                 <h1 class="h4 mb-3">Entrar</h1>
-                <?php if (!empty($_GET['error'])): ?>
+                <?php if (($_GET['error'] ?? '') === '1'): ?>
                     <div class="alert alert-danger">Credenciais inválidas.</div>
+                <?php endif; ?>
+                <?php if (($_GET['error'] ?? '') === 'db'): ?>
+                    <div class="alert alert-warning">
+                        Não foi possível ligar à base de dados. Verifique `includes/db.php`, importação do `database.sql` e permissões MySQL na Hostinger.
+                    </div>
                 <?php endif; ?>
                 <form method="post" action="/actions/login_action.php">
                     <div class="mb-3">
