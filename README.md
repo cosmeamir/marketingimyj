@@ -97,7 +97,15 @@ Checklist rápido:
 1. Confirmar que importou `database.sql` na base certa.
 2. Confirmar host, nome, user e password MySQL no `includes/db.php`.
 3. Confirmar permissões do utilizador MySQL para essa base.
-4. No hPanel, validar versão PHP (8.x recomendado) e ativar `mysqli/pdo_mysql`.
+4. No hPanel, escolher uma versão suportada (PHP 8.2, 8.3, 8.4 ou 8.5) e ativar `mysqli/pdo_mysql` (recomendado: PHP 8.3).
 5. Verificar logs de erro da Hostinger (Errors/Logs) para mensagem exata.
 
 O sistema agora evita erro fatal no login: se a BD falhar, mostra aviso e usa modo de contingência temporário.
+
+
+## Compatibilidade de versão PHP (Hostinger)
+As versões mostradas no seu painel (**8.2, 8.3, 8.4, 8.5**) são compatíveis com este projeto.
+
+Recomendação prática:
+- Use **PHP 8.3** (equilíbrio entre estabilidade e suporte atual).
+- Se continuar com erro 500, o problema costuma ser **BD/credenciais/permissões**, não a versão PHP em si.

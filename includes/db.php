@@ -1,10 +1,10 @@
 <?php
 // Configuração para MySQL (Hostinger/local)
-$DB_HOST = getenv('DB_HOST') ?: '127.0.0.1';
+$DB_HOST = getenv('DB_HOST') ?: 'localhost';
 $DB_PORT = getenv('DB_PORT') ?: '3306';
-$DB_NAME = getenv('DB_NAME') ?: 'marketing_cronograma';
-$DB_USER = getenv('DB_USER') ?: 'root';
-$DB_PASS = getenv('DB_PASS') ?: '';
+$DB_NAME = getenv('DB_NAME') ?: 'u914400496_imyj';
+$DB_USER = getenv('DB_USER') ?: 'u914400496_imyjao';
+$DB_PASS = getenv('DB_PASS') ?: 'InstitutoMYJ2@26';
 
 $pdo = null;
 $dbError = null;
