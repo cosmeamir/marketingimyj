@@ -4,9 +4,12 @@
 
     const view = timeline.dataset.view || 'month';
     const posts = JSON.parse(timeline.dataset.posts || '[]');
-    const now = new Date();
+    const ym = timeline.dataset.ym || new Date().toISOString().slice(0, 7);
+    const [year, month] = ym.split('-').map(Number);
+    const baseDate = new Date(year, (month || 1) - 1, 1);
 
-    const days = view === 'week' ? 7 : (view === 'day' ? 1 : 30);
+    const monthDays = new Date(baseDate.getFullYear(), baseDate.getMonth() + 1, 0).getDate();
+    const days = view === 'week' ? 7 : (view === 'day' ? 1 : monthDays);
 
     let columns = 7;
     const width = window.innerWidth;
@@ -18,8 +21,10 @@
     grid.className = 'timeline-grid';
     grid.style.gridTemplateColumns = `repeat(${columns}, minmax(0, 1fr))`;
 
+    const startDay = view === 'week' ? 1 : (view === 'day' ? new Date().getDate() : 1);
+
     for (let i = 0; i < days; i++) {
-        const date = new Date(now.getFullYear(), now.getMonth(), i + 1);
+        const date = new Date(baseDate.getFullYear(), baseDate.getMonth(), startDay + i);
         const key = date.toISOString().slice(0, 10);
 
         const cell = document.createElement('div');
