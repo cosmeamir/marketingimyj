@@ -13,7 +13,12 @@ function db(): PDO
 function bootstrapTables(): void
 {
     $pdo = db();
-    $pdo->exec('CREATE TABLE IF NOT EXISTS app_config (
+    try {
+        $pdo->exec("ALTER TABLE users MODIFY role ENUM('admin','cliente','design') NOT NULL");
+    } catch (Throwable $e) {
+        // ignora em ambientes onde não seja necessário
+    }
+        $pdo->exec('CREATE TABLE IF NOT EXISTS app_config (
         id INT AUTO_INCREMENT PRIMARY KEY,
         tipo VARCHAR(50) NOT NULL,
         valor VARCHAR(120) NOT NULL,
@@ -31,6 +36,7 @@ function seedIfEmpty(): void
         $stmt = $pdo->prepare('INSERT INTO users (username, password, role, nome, email) VALUES (?, ?, ?, ?, ?)');
         $stmt->execute(['codigocosme', password_hash('CC.2026', PASSWORD_DEFAULT), 'admin', 'Administrador', 'admin@local']);
         $stmt->execute(['imyj', password_hash('IMYJ.2026', PASSWORD_DEFAULT), 'cliente', 'Cliente IMYJ', 'cliente@local']);
+        $stmt->execute(['design', password_hash('desing.2026', PASSWORD_DEFAULT), 'design', 'Utilizador Design', 'design@local']);
     }
 }
 

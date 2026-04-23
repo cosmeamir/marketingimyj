@@ -1,7 +1,16 @@
 <?php
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/data.php';
-requireRole('admin');
+requireAnyRole(['admin', 'design']);
+
+$user = currentUser();
+$isDesign = ($user['role'] ?? '') === 'design';
+$postId = (int) ($_POST['id'] ?? 0);
+
+if ($isDesign && $postId <= 0) {
+    header('Location: /admin/posts.php');
+    exit;
+}
 
 $creativeUrl = trim($_POST['creative_url'] ?? '');
 $currentCreative = trim($_POST['current_creative_url'] ?? '');
@@ -28,8 +37,13 @@ if ($creativeUrl === '') {
     $creativeUrl = $currentCreative;
 }
 
+$status = trim($_POST['status'] ?? 'Planeado');
+if ($isDesign) {
+    $status = 'Pendente aprovação';
+}
+
 savePost([
-    'id' => (int) ($_POST['id'] ?? 0),
+    'id' => $postId,
     'campaign_id' => (int) ($_POST['campaign_id'] ?? 0),
     'titulo' => trim($_POST['titulo'] ?? ''),
     'tipo_conteudo' => trim($_POST['tipo_conteudo'] ?? 'Post'),
@@ -38,7 +52,7 @@ savePost([
     'post_time' => $_POST['post_time'] ?? '00:00',
     'legenda' => trim($_POST['legenda'] ?? ''),
     'cta' => trim($_POST['cta'] ?? ''),
-    'status' => trim($_POST['status'] ?? 'Planeado'),
+    'status' => $status,
     'creative_url' => $creativeUrl,
 ]);
 

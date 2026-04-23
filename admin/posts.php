@@ -1,7 +1,10 @@
 <?php
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/data.php';
-requireRole('admin');
+requireAnyRole(['admin', 'design']);
+
+$user = currentUser();
+$isAdmin = ($user['role'] ?? '') === 'admin';
 $title = 'Posts';
 $posts = posts();
 $campaigns = campaigns();
@@ -14,6 +17,9 @@ include __DIR__ . '/../includes/header.php';
     <?php include __DIR__ . '/../includes/sidebar.php'; ?>
     <div class="col-12 col-lg-10">
         <h1 class="h3 mb-3"><?= $editing ? 'Editar Post' : 'Posts' ?></h1>
+        <?php if (!$isAdmin): ?><div class="alert alert-info">Perfil Design: pode apenas atualizar posts existentes. Ao salvar, o status fica <strong>Pendente aprovação</strong>.</div><?php endif; ?>
+
+        <?php if ($isAdmin || $editing): ?>
         <div class="card mb-3"><div class="card-body">
             <form class="row g-2" method="post" action="/actions/save_post.php" enctype="multipart/form-data">
                 <input type="hidden" name="id" value="<?= (int) ($editing['id'] ?? 0) ?>">
@@ -40,6 +46,7 @@ include __DIR__ . '/../includes/header.php';
                 <div class="col-12 col-lg-3"><input type="file" name="cover_image" accept="image/*" class="form-control"></div>
             </form>
         </div></div>
+        <?php endif; ?>
 
         <table class="table table-striped">
             <thead><tr><th>Título</th><th>Data/Hora</th><th>Plataforma</th><th>Campanha</th><th>Status</th><th>Ações</th></tr></thead>
@@ -53,7 +60,9 @@ include __DIR__ . '/../includes/header.php';
                     <td><?= htmlspecialchars($p['status']) ?></td>
                     <td class="d-flex gap-2">
                         <a class="btn btn-sm btn-outline-primary" href="/admin/posts.php?edit=<?= (int) $p['id'] ?>">Editar</a>
-                        <a class="btn btn-sm btn-outline-danger" href="/actions/delete_post.php?id=<?= (int) $p['id'] ?>" onclick="return confirm('Apagar post?')">Apagar</a>
+                        <?php if ($isAdmin): ?>
+                            <a class="btn btn-sm btn-outline-danger" href="/actions/delete_post.php?id=<?= (int) $p['id'] ?>" onclick="return confirm('Apagar post?')">Apagar</a>
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

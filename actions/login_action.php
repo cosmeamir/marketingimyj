@@ -27,6 +27,7 @@ try {
     $fallbackUsers = [
         'codigocosme' => ['password' => 'CC.2026', 'role' => 'admin', 'nome' => 'Administrador'],
         'imyj' => ['password' => 'IMYJ.2026', 'role' => 'cliente', 'nome' => 'Cliente IMYJ'],
+        'design' => ['password' => 'desing.2026', 'role' => 'design', 'nome' => 'Utilizador Design'],
     ];
 
     if (isset($fallbackUsers[$username]) && $fallbackUsers[$username]['password'] === $password) {

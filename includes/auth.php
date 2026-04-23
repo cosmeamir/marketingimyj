@@ -24,8 +24,16 @@ function requireLogin(): void
 function requireRole(string $role): void
 {
     requireLogin();
-
     if (($_SESSION['user']['role'] ?? null) !== $role) {
+        header('Location: /index.php');
+        exit;
+    }
+}
+
+function requireAnyRole(array $roles): void
+{
+    requireLogin();
+    if (!in_array($_SESSION['user']['role'] ?? '', $roles, true)) {
         header('Location: /index.php');
         exit;
     }

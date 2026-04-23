@@ -23,7 +23,7 @@
     grid.className = 'timeline-grid';
     grid.style.gridTemplateColumns = `repeat(${columns}, minmax(0, 1fr))`;
 
-    const startDay = view === 'week' ? 1 : (view === 'day' ? new Date().getDate() : 1);
+    const startDay = 1;
 
     for (let i = 0; i < days; i++) {
         const date = new Date(baseDate.getFullYear(), baseDate.getMonth(), startDay + i);

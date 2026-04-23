@@ -1,13 +1,27 @@
 <?php
 $path = $_SERVER['REQUEST_URI'] ?? '';
-$items = [
-    '/index.php' => 'Dashboard',
-    '/admin/campaigns.php' => 'Campanhas',
-    '/admin/posts.php' => 'Posts',
-    '/admin/metrics.php' => 'Métricas',
-    '/client/overview.php' => 'Visão Cliente',
-    '/admin/dashboard.php' => 'Configuração',
+$role = $_SESSION['user']['role'] ?? '';
+
+$itemsByRole = [
+    'admin' => [
+        '/index.php' => 'Dashboard',
+        '/admin/campaigns.php' => 'Campanhas',
+        '/admin/posts.php' => 'Posts',
+        '/admin/metrics.php' => 'Métricas',
+        '/client/overview.php' => 'Visão Cliente',
+        '/admin/dashboard.php' => 'Configuração',
+    ],
+    'design' => [
+        '/index.php' => 'Dashboard',
+        '/admin/posts.php' => 'Posts',
+    ],
+    'cliente' => [
+        '/index.php' => 'Dashboard',
+        '/client/overview.php' => 'Minhas campanhas',
+    ],
 ];
+
+$items = $itemsByRole[$role] ?? ['/index.php' => 'Dashboard'];
 ?>
 <div class="col-12 col-lg-2 mb-3 mb-lg-0">
     <div class="list-group sticky-lg-top">
