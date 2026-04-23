@@ -3,6 +3,31 @@ require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/data.php';
 requireRole('admin');
 
+$creativeUrl = trim($_POST['creative_url'] ?? '');
+$currentCreative = trim($_POST['current_creative_url'] ?? '');
+
+if (!empty($_FILES['cover_image']['tmp_name']) && is_uploaded_file($_FILES['cover_image']['tmp_name'])) {
+    $ext = strtolower(pathinfo($_FILES['cover_image']['name'], PATHINFO_EXTENSION));
+    $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+
+    if (in_array($ext, $allowed, true)) {
+        $fileName = 'post_' . date('Ymd_His') . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+        $destinationDir = __DIR__ . '/../assets/uploads/';
+        if (!is_dir($destinationDir)) {
+            mkdir($destinationDir, 0775, true);
+        }
+
+        $destination = $destinationDir . $fileName;
+        if (move_uploaded_file($_FILES['cover_image']['tmp_name'], $destination)) {
+            $creativeUrl = '/assets/uploads/' . $fileName;
+        }
+    }
+}
+
+if ($creativeUrl === '') {
+    $creativeUrl = $currentCreative;
+}
+
 savePost([
     'id' => (int) ($_POST['id'] ?? 0),
     'campaign_id' => (int) ($_POST['campaign_id'] ?? 0),
@@ -14,7 +39,7 @@ savePost([
     'legenda' => trim($_POST['legenda'] ?? ''),
     'cta' => trim($_POST['cta'] ?? ''),
     'status' => trim($_POST['status'] ?? 'Planeado'),
-    'creative_url' => trim($_POST['creative_url'] ?? '#'),
+    'creative_url' => $creativeUrl,
 ]);
 
 header('Location: /admin/posts.php');

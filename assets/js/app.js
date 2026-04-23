@@ -29,7 +29,12 @@
         posts.filter((p) => p.post_date === key).forEach((p) => {
             const item = document.createElement('div');
             item.className = 'timeline-item';
-            item.innerHTML = `<strong>${String(p.post_time).slice(0, 5)}</strong> ${p.titulo}<br><small>${p.plataforma}</small>`;
+
+            const thumb = p.creative_url
+                ? `<img src="${p.creative_url}" class="timeline-thumb" alt="${p.titulo}" data-full="${p.creative_url}">`
+                : '';
+
+            item.innerHTML = `${thumb}<div><strong>${String(p.post_time).slice(0, 5)}</strong> ${p.titulo}<br><small>${p.plataforma}</small></div>`;
             item.title = p.legenda || p.titulo;
             cell.appendChild(item);
         });
@@ -39,4 +44,34 @@
 
     timeline.innerHTML = '';
     timeline.appendChild(grid);
+
+    timeline.querySelectorAll('.timeline-thumb').forEach((img) => {
+        img.addEventListener('click', () => openImageModal(img.dataset.full, img.alt));
+    });
+
+    function openImageModal(src, alt) {
+        const existing = document.getElementById('postImageModal');
+        if (existing) existing.remove();
+
+        const modal = document.createElement('div');
+        modal.className = 'modal fade';
+        modal.id = 'postImageModal';
+        modal.tabIndex = -1;
+        modal.innerHTML = `
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Imagem do post</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img src="${src}" alt="${alt}" class="img-fluid rounded">
+                    </div>
+                </div>
+            </div>`;
+
+        document.body.appendChild(modal);
+        const bsModal = new bootstrap.Modal(modal);
+        bsModal.show();
+    }
 })();

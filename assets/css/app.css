@@ -27,7 +27,7 @@ body { background: #f4f7f3; }
 .timeline-grid { display: grid; gap: 8px; border-top: 1px solid #dee2e6; padding-top: 10px; }
 .timeline-day { background: #fff; border: 1px solid #dee2e6; border-radius: 8px; min-height: 120px; padding: 8px; }
 .timeline-day h6 { font-size: 0.85rem; color: #495057; margin-bottom: 8px; }
-.timeline-item {
+ .timeline-item {
     display: block;
     font-size: 0.75rem;
     border-left: 4px solid var(--imyj-green);
@@ -43,4 +43,14 @@ body { background: #f4f7f3; }
 }
 @media (max-width: 767px) {
     .timeline-day { min-height: 100px; }
+}
+
+.timeline-item { display: flex; gap: 8px; align-items: flex-start; }
+.timeline-thumb {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #cfe3cf;
+    cursor: pointer;
 }
