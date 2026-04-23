@@ -13,7 +13,7 @@ include __DIR__ . '/includes/header.php';
     <div class="col-md-4">
         <div class="card">
             <div class="card-body">
-                <h1 class="h4 mb-3">Entrar</h1>
+                <div class="text-center"><img src="/assets/img/logo-imyj.svg" alt="Logo IMYJ" class="login-logo"><h1 class="h4 mb-3">Entrar</h1></div>
                 <?php if (($_GET['error'] ?? '') === '1'): ?>
                     <div class="alert alert-danger">Credenciais inválidas.</div>
                 <?php endif; ?>

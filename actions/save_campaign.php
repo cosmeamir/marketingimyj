@@ -4,6 +4,7 @@ require_once __DIR__ . '/../includes/data.php';
 requireRole('admin');
 
 saveCampaign([
+    'id' => (int) ($_POST['id'] ?? 0),
     'titulo' => trim($_POST['titulo'] ?? ''),
     'descricao' => trim($_POST['descricao'] ?? ''),
     'objetivo' => trim($_POST['objetivo'] ?? 'Awareness'),

@@ -1,44 +1,46 @@
-body { background: #f7f8fb; }
+:root {
+    --imyj-green: #005a16;
+    --imyj-dark-green: #003d0f;
+    --imyj-yellow: #f4cd00;
+    --imyj-soft: #eef8ee;
+}
+body { background: #f4f7f3; }
+.navbar.bg-dark { background: linear-gradient(90deg, var(--imyj-dark-green), var(--imyj-green)) !important; border-bottom: 3px solid var(--imyj-yellow); }
+.btn-primary { background: var(--imyj-green); border-color: var(--imyj-green); }
+.btn-primary:hover { background: var(--imyj-dark-green); border-color: var(--imyj-dark-green); }
+.list-group-item.active { background: var(--imyj-green); border-color: var(--imyj-green); }
+.card { border: 1px solid #d9e8d9; }
+.card-header { background: var(--imyj-soft); font-weight: 600; }
 .kpi-card {
-    background: #fff;
-    border: 1px solid #e9ecef;
+    background: linear-gradient(180deg, #ffffff, #f7fff7);
+    border: 1px solid #d6ebd6;
+    border-left: 5px solid var(--imyj-yellow);
     border-radius: 10px;
     padding: 14px;
     display: flex;
     flex-direction: column;
     height: 100%;
 }
-.kpi-card span { color: #6c757d; font-size: 0.85rem; }
-.kpi-card strong { font-size: 1.1rem; margin-top: 6px; }
+.kpi-card span { color: #4d6a4d; font-size: 0.85rem; }
+.kpi-card strong { font-size: 1.1rem; margin-top: 6px; color: var(--imyj-dark-green); }
 #timeline { width: 100%; overflow: hidden; }
-.timeline-grid {
-    display: grid;
-    gap: 8px;
-    border-top: 1px solid #dee2e6;
-    padding-top: 10px;
-}
-.timeline-day {
-    background: #fff;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    min-height: 120px;
-    padding: 8px;
-}
-.timeline-day h6 {
-    font-size: 0.85rem;
-    color: #495057;
-    margin-bottom: 8px;
-}
+.timeline-grid { display: grid; gap: 8px; border-top: 1px solid #dee2e6; padding-top: 10px; }
+.timeline-day { background: #fff; border: 1px solid #dee2e6; border-radius: 8px; min-height: 120px; padding: 8px; }
+.timeline-day h6 { font-size: 0.85rem; color: #495057; margin-bottom: 8px; }
 .timeline-item {
     display: block;
     font-size: 0.75rem;
-    border-left: 4px solid #0d6efd;
+    border-left: 4px solid var(--imyj-green);
     background: #eef4ff;
     padding: 6px;
     border-radius: 6px;
     margin-bottom: 5px;
 }
-
+.login-logo {
+    width: 120px;
+    height: auto;
+    margin-bottom: 12px;
+}
 @media (max-width: 767px) {
     .timeline-day { min-height: 100px; }
 }

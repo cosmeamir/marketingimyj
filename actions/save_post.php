@@ -4,6 +4,7 @@ require_once __DIR__ . '/../includes/data.php';
 requireRole('admin');
 
 savePost([
+    'id' => (int) ($_POST['id'] ?? 0),
     'campaign_id' => (int) ($_POST['campaign_id'] ?? 0),
     'titulo' => trim($_POST['titulo'] ?? ''),
     'tipo_conteudo' => trim($_POST['tipo_conteudo'] ?? 'Post'),

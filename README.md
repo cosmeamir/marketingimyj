@@ -109,3 +109,10 @@ As versões mostradas no seu painel (**8.2, 8.3, 8.4, 8.5**) são compatíveis c
 Recomendação prática:
 - Use **PHP 8.3** (equilíbrio entre estabilidade e suporte atual).
 - Se continuar com erro 500, o problema costuma ser **BD/credenciais/permissões**, não a versão PHP em si.
+
+
+## Novidades administrativas
+- CRUD completo para **Campanhas, Posts e Métricas** (criar, editar e apagar).
+- Área de **Configuração** com gestão de canais, status de campanha e tipos de conteúdo.
+- Função de **reset total** para limpar campanhas, posts e métricas e deixar o sistema zerado.
+- Layout atualizado com paleta verde/amarelo e logo no login.
