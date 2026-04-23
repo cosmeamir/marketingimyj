@@ -8,6 +8,8 @@
     const [year, month] = ym.split('-').map(Number);
     const baseDate = new Date(year, (month || 1) - 1, 1);
 
+    const postById = Object.fromEntries(posts.map((p) => [String(p.id), p]));
+
     const monthDays = new Date(baseDate.getFullYear(), baseDate.getMonth() + 1, 0).getDate();
     const days = view === 'week' ? 7 : (view === 'day' ? 1 : monthDays);
 
@@ -36,7 +38,7 @@
             item.className = 'timeline-item';
 
             const thumb = p.creative_url
-                ? `<img src="${p.creative_url}" class="timeline-thumb" alt="${p.titulo}" data-full="${p.creative_url}">`
+                ? `<img src="${p.creative_url}" class="timeline-thumb" alt="${p.titulo}" data-full="${p.creative_url}" data-post-id="${p.id}">`
                 : '';
 
             item.innerHTML = `${thumb}<div><strong>${String(p.post_time).slice(0, 5)}</strong> ${p.titulo}<br><small>${p.plataforma}</small></div>`;
@@ -51,10 +53,13 @@
     timeline.appendChild(grid);
 
     timeline.querySelectorAll('.timeline-thumb').forEach((img) => {
-        img.addEventListener('click', () => openImageModal(img.dataset.full, img.alt));
+        img.addEventListener('click', () => {
+            const post = postById[img.dataset.postId] || {};
+            openImageModal(img.dataset.full, post);
+        });
     });
 
-    function openImageModal(src, alt) {
+    function openImageModal(src, post) {
         const existing = document.getElementById('postImageModal');
         if (existing) existing.remove();
 
@@ -63,14 +68,29 @@
         modal.id = 'postImageModal';
         modal.tabIndex = -1;
         modal.innerHTML = `
-            <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Imagem do post</h5>
+                        <h5 class="modal-title">Detalhes do post</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <div class="modal-body text-center">
-                        <img src="${src}" alt="${alt}" class="img-fluid rounded">
+                    <div class="modal-body">
+                        <div class="row g-3 align-items-start">
+                            <div class="col-12 col-md-6 text-center">
+                                <img src="${src}" alt="${post.titulo || 'Post'}" class="img-fluid rounded shadow-sm">
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <h4 class="mb-2">${post.titulo || '-'}</h4>
+                                <ul class="list-group list-group-flush small">
+                                    <li class="list-group-item px-0"><strong>Plataforma:</strong> ${post.plataforma || '-'}</li>
+                                    <li class="list-group-item px-0"><strong>Data:</strong> ${post.post_date || '-'} ${String(post.post_time || '').slice(0, 5)}</li>
+                                    <li class="list-group-item px-0"><strong>Tipo:</strong> ${post.tipo_conteudo || '-'}</li>
+                                    <li class="list-group-item px-0"><strong>Status:</strong> ${post.status || '-'}</li>
+                                    <li class="list-group-item px-0"><strong>CTA:</strong> ${post.cta || '-'}</li>
+                                    <li class="list-group-item px-0"><strong>Legenda:</strong> ${post.legenda || '-'}</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>`;
