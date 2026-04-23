@@ -21,9 +21,15 @@ include __DIR__ . '/../includes/header.php';
             <form class="row g-2" method="post" action="/actions/save_campaign.php">
                 <input type="hidden" name="id" value="<?= (int) ($editing['id'] ?? 0) ?>">
                 <div class="col-12 col-lg-3"><input name="titulo" class="form-control" placeholder="Título" required value="<?= htmlspecialchars($editing['titulo'] ?? '') ?>"></div>
-                <div class="col-12 col-lg-2"><select name="canal" class="form-select" required>
-                    <?php foreach ($channels as $ch): ?><option value="<?= htmlspecialchars($ch['nome']) ?>" <?= (($editing['canal'] ?? '') === $ch['nome']) ? 'selected' : '' ?>><?= htmlspecialchars($ch['nome']) ?></option><?php endforeach; ?>
-                </select></div>
+                <div class="col-12 col-lg-2">
+                    <?php if (!empty($channels)): ?>
+                        <select name="canal" class="form-select" required>
+                            <?php foreach ($channels as $ch): ?><option value="<?= htmlspecialchars($ch['nome']) ?>" <?= (($editing['canal'] ?? '') === $ch['nome']) ? 'selected' : '' ?>><?= htmlspecialchars($ch['nome']) ?></option><?php endforeach; ?>
+                        </select>
+                    <?php else: ?>
+                        <input name="canal" class="form-control" placeholder="Canal" value="<?= htmlspecialchars($editing['canal'] ?? '') ?>" required>
+                    <?php endif; ?>
+                </div>
                 <div class="col-6 col-lg-2"><input type="date" name="start_date" class="form-control" required value="<?= htmlspecialchars($editing['start_date'] ?? '') ?>"></div>
                 <div class="col-6 col-lg-2"><input type="date" name="end_date" class="form-control" required value="<?= htmlspecialchars($editing['end_date'] ?? '') ?>"></div>
                 <div class="col-6 col-lg-1"><input type="number" step="0.01" name="budget" class="form-control" placeholder="Orç." value="<?= htmlspecialchars($editing['budget'] ?? '') ?>"></div>
@@ -31,9 +37,15 @@ include __DIR__ . '/../includes/header.php';
                 <div class="col-12 col-lg-1"><button class="btn btn-primary w-100"><?= $editing ? 'Salvar' : 'Criar' ?></button></div>
                 <div class="col-12 col-lg-3"><input name="objetivo" class="form-control" placeholder="Objetivo" value="<?= htmlspecialchars($editing['objetivo'] ?? '') ?>"></div>
                 <div class="col-12 col-lg-3"><input name="responsavel" class="form-control" placeholder="Responsável" value="<?= htmlspecialchars($editing['responsavel'] ?? '') ?>"></div>
-                <div class="col-12 col-lg-3"><select name="status" class="form-select">
-                    <?php foreach ($statuses as $st): ?><option value="<?= htmlspecialchars($st['valor']) ?>" <?= (($editing['status'] ?? '') === $st['valor']) ? 'selected' : '' ?>><?= htmlspecialchars($st['valor']) ?></option><?php endforeach; ?>
-                </select></div>
+                <div class="col-12 col-lg-3">
+                    <?php if (!empty($statuses)): ?>
+                        <select name="status" class="form-select">
+                            <?php foreach ($statuses as $st): ?><option value="<?= htmlspecialchars($st['valor']) ?>" <?= (($editing['status'] ?? '') === $st['valor']) ? 'selected' : '' ?>><?= htmlspecialchars($st['valor']) ?></option><?php endforeach; ?>
+                        </select>
+                    <?php else: ?>
+                        <input name="status" class="form-control" placeholder="Status" value="<?= htmlspecialchars($editing['status'] ?? 'Planeado') ?>">
+                    <?php endif; ?>
+                </div>
                 <div class="col-12 col-lg-3"><input name="descricao" class="form-control" placeholder="Descrição" value="<?= htmlspecialchars($editing['descricao'] ?? '') ?>"></div>
             </form>
         </div></div>

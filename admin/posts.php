@@ -24,9 +24,15 @@ include __DIR__ . '/../includes/header.php';
                 <div class="col-6 col-lg-2"><select class="form-select" name="campaign_id" required>
                     <?php foreach ($campaigns as $c): ?><option value="<?= (int) $c['id'] ?>" <?= ((int) ($editing['campaign_id'] ?? 0) === (int) $c['id']) ? 'selected' : '' ?>><?= htmlspecialchars($c['titulo']) ?></option><?php endforeach; ?>
                 </select></div>
-                <div class="col-6 col-lg-1"><select class="form-select" name="tipo_conteudo">
-                    <?php foreach ($contentTypes as $ct): ?><option value="<?= htmlspecialchars($ct['valor']) ?>" <?= (($editing['tipo_conteudo'] ?? '') === $ct['valor']) ? 'selected' : '' ?>><?= htmlspecialchars($ct['valor']) ?></option><?php endforeach; ?>
-                </select></div>
+                <div class="col-6 col-lg-1">
+                    <?php if (!empty($contentTypes)): ?>
+                        <select class="form-select" name="tipo_conteudo">
+                            <?php foreach ($contentTypes as $ct): ?><option value="<?= htmlspecialchars($ct['valor']) ?>" <?= (($editing['tipo_conteudo'] ?? '') === $ct['valor']) ? 'selected' : '' ?>><?= htmlspecialchars($ct['valor']) ?></option><?php endforeach; ?>
+                        </select>
+                    <?php else: ?>
+                        <input class="form-control" name="tipo_conteudo" placeholder="Tipo" value="<?= htmlspecialchars($editing['tipo_conteudo'] ?? '') ?>">
+                    <?php endif; ?>
+                </div>
                 <div class="col-6 col-lg-1"><button class="btn btn-primary w-100"><?= $editing ? 'Salvar' : 'Novo' ?></button></div>
                 <div class="col-12"><input name="legenda" class="form-control" placeholder="Legenda" value="<?= htmlspecialchars($editing['legenda'] ?? '') ?>"></div>
             </form>

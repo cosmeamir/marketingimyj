@@ -32,46 +32,6 @@ function seedIfEmpty(): void
         $stmt->execute(['codigocosme', password_hash('CC.2026', PASSWORD_DEFAULT), 'admin', 'Administrador', 'admin@local']);
         $stmt->execute(['imyj', password_hash('IMYJ.2026', PASSWORD_DEFAULT), 'cliente', 'Cliente IMYJ', 'cliente@local']);
     }
-
-    $channelsCount = (int) $pdo->query('SELECT COUNT(*) FROM channels')->fetchColumn();
-    if ($channelsCount === 0) {
-        $pdo->exec("INSERT INTO channels (nome, tipo, status) VALUES
-            ('Instagram', 'Rede social', 'Ativo'),
-            ('Facebook', 'Rede social', 'Ativo'),
-            ('Google Ads', 'Ads', 'Ativo'),
-            ('Email', 'CRM', 'Ativo')");
-    }
-
-    $configCount = (int) $pdo->query('SELECT COUNT(*) FROM app_config')->fetchColumn();
-    if ($configCount === 0) {
-        $pdo->exec("INSERT INTO app_config (tipo, valor, ativo) VALUES
-            ('status_campanha', 'Planeado', 1),
-            ('status_campanha', 'Em execução', 1),
-            ('status_campanha', 'Concluído', 1),
-            ('status_campanha', 'Pausado', 1),
-            ('tipo_conteudo', 'Imagem', 1),
-            ('tipo_conteudo', 'Vídeo', 1),
-            ('tipo_conteudo', 'Reel', 1),
-            ('tipo_conteudo', 'Banner', 1)");
-    }
-
-    $campaignCount = (int) $pdo->query('SELECT COUNT(*) FROM campaigns')->fetchColumn();
-    if ($campaignCount === 0) {
-        $pdo->exec("INSERT INTO campaigns (titulo, descricao, objetivo, canal, start_date, end_date, budget, spent, status, responsavel)
-            VALUES
-            ('Lançamento Produto X', 'Campanha de awareness + tráfego', 'Leads', 'Instagram', CURDATE(), DATE_ADD(CURDATE(), INTERVAL 20 DAY), 2500000, 1240000, 'Em execução', 'Ana Silva'),
-            ('Promoção Outono', 'Conversão para ecommerce', 'Conversões', 'Google Ads', CURDATE(), DATE_ADD(CURDATE(), INTERVAL 15 DAY), 4000000, 1980000, 'Planeado', 'Bruno Costa')");
-
-        $pdo->exec("INSERT INTO posts (campaign_id, titulo, tipo_conteudo, plataforma, post_date, post_time, legenda, cta, status, creative_url)
-            VALUES
-            (1, 'Teaser em Reel', 'Reel', 'Instagram', CURDATE(), '10:30:00', 'Algo grande está a chegar', 'Saber mais', 'Aprovado', '#'),
-            (2, 'Banner pesquisa', 'Banner', 'Google Ads', DATE_ADD(CURDATE(), INTERVAL 1 DAY), '09:00:00', 'Oferta limitada', 'Comprar agora', 'Planeado', '#')");
-
-        $pdo->exec("INSERT INTO traffic_metrics (campaign_id, data_registo, plataforma, impressoes, cliques, leads, conversoes, cpc, cpm, spent, resultado)
-            VALUES
-            (1, CURDATE(), 'Instagram', 38000, 2100, 240, 62, 590.48, 32631.58, 1240000, 0),
-            (2, CURDATE(), 'Google Ads', 22000, 1300, 160, 48, 1523.08, 90000.00, 1980000, 0)");
-    }
 }
 
 function campaigns(): array { return db()->query('SELECT * FROM campaigns ORDER BY start_date, id DESC')->fetchAll(); }
@@ -94,45 +54,59 @@ function saveCampaign(array $p): void
 {
     if (!empty($p['id'])) {
         $sql = 'UPDATE campaigns SET titulo=:titulo, descricao=:descricao, objetivo=:objetivo, canal=:canal, start_date=:start_date, end_date=:end_date, budget=:budget, spent=:spent, status=:status, responsavel=:responsavel WHERE id=:id';
+        $params = [
+            ':id' => $p['id'], ':titulo' => $p['titulo'], ':descricao' => $p['descricao'], ':objetivo' => $p['objetivo'], ':canal' => $p['canal'],
+            ':start_date' => $p['start_date'], ':end_date' => $p['end_date'], ':budget' => $p['budget'], ':spent' => $p['spent'],
+            ':status' => $p['status'], ':responsavel' => $p['responsavel'],
+        ];
     } else {
         $sql = 'INSERT INTO campaigns (titulo, descricao, objetivo, canal, start_date, end_date, budget, spent, status, responsavel) VALUES (:titulo, :descricao, :objetivo, :canal, :start_date, :end_date, :budget, :spent, :status, :responsavel)';
+        $params = [
+            ':titulo' => $p['titulo'], ':descricao' => $p['descricao'], ':objetivo' => $p['objetivo'], ':canal' => $p['canal'],
+            ':start_date' => $p['start_date'], ':end_date' => $p['end_date'], ':budget' => $p['budget'], ':spent' => $p['spent'],
+            ':status' => $p['status'], ':responsavel' => $p['responsavel'],
+        ];
     }
-    $stmt = db()->prepare($sql);
-    $stmt->execute([
-        ':id' => $p['id'] ?? null,
-        ':titulo' => $p['titulo'], ':descricao' => $p['descricao'], ':objetivo' => $p['objetivo'], ':canal' => $p['canal'],
-        ':start_date' => $p['start_date'], ':end_date' => $p['end_date'], ':budget' => $p['budget'], ':spent' => $p['spent'],
-        ':status' => $p['status'], ':responsavel' => $p['responsavel'],
-    ]);
+    db()->prepare($sql)->execute($params);
 }
 
 function savePost(array $p): void
 {
     if (!empty($p['id'])) {
         $sql = 'UPDATE posts SET campaign_id=:campaign_id, titulo=:titulo, tipo_conteudo=:tipo_conteudo, plataforma=:plataforma, post_date=:post_date, post_time=:post_time, legenda=:legenda, cta=:cta, status=:status, creative_url=:creative_url WHERE id=:id';
+        $params = [
+            ':id' => $p['id'], ':campaign_id' => $p['campaign_id'], ':titulo' => $p['titulo'], ':tipo_conteudo' => $p['tipo_conteudo'],
+            ':plataforma' => $p['plataforma'], ':post_date' => $p['post_date'], ':post_time' => $p['post_time'], ':legenda' => $p['legenda'],
+            ':cta' => $p['cta'], ':status' => $p['status'], ':creative_url' => $p['creative_url'],
+        ];
     } else {
         $sql = 'INSERT INTO posts (campaign_id, titulo, tipo_conteudo, plataforma, post_date, post_time, legenda, cta, status, creative_url) VALUES (:campaign_id, :titulo, :tipo_conteudo, :plataforma, :post_date, :post_time, :legenda, :cta, :status, :creative_url)';
+        $params = [
+            ':campaign_id' => $p['campaign_id'], ':titulo' => $p['titulo'], ':tipo_conteudo' => $p['tipo_conteudo'], ':plataforma' => $p['plataforma'],
+            ':post_date' => $p['post_date'], ':post_time' => $p['post_time'], ':legenda' => $p['legenda'], ':cta' => $p['cta'], ':status' => $p['status'], ':creative_url' => $p['creative_url'],
+        ];
     }
-    $stmt = db()->prepare($sql);
-    $stmt->execute([
-        ':id' => $p['id'] ?? null, ':campaign_id' => $p['campaign_id'], ':titulo' => $p['titulo'], ':tipo_conteudo' => $p['tipo_conteudo'],
-        ':plataforma' => $p['plataforma'], ':post_date' => $p['post_date'], ':post_time' => $p['post_time'], ':legenda' => $p['legenda'],
-        ':cta' => $p['cta'], ':status' => $p['status'], ':creative_url' => $p['creative_url'],
-    ]);
+    db()->prepare($sql)->execute($params);
 }
 
 function saveMetric(array $p): void
 {
     if (!empty($p['id'])) {
         $sql = 'UPDATE traffic_metrics SET campaign_id=:campaign_id, data_registo=:data_registo, plataforma=:plataforma, impressoes=:impressoes, cliques=:cliques, leads=:leads, conversoes=:conversoes, cpc=:cpc, cpm=:cpm, spent=:spent, resultado=:resultado WHERE id=:id';
+        $params = [
+            ':id' => $p['id'], ':campaign_id' => $p['campaign_id'], ':data_registo' => $p['data_registo'], ':plataforma' => $p['plataforma'],
+            ':impressoes' => $p['impressoes'], ':cliques' => $p['cliques'], ':leads' => $p['leads'], ':conversoes' => $p['conversoes'],
+            ':cpc' => $p['cpc'], ':cpm' => $p['cpm'], ':spent' => $p['spent'], ':resultado' => $p['resultado'],
+        ];
     } else {
         $sql = 'INSERT INTO traffic_metrics (campaign_id, data_registo, plataforma, impressoes, cliques, leads, conversoes, cpc, cpm, spent, resultado) VALUES (:campaign_id, :data_registo, :plataforma, :impressoes, :cliques, :leads, :conversoes, :cpc, :cpm, :spent, :resultado)';
+        $params = [
+            ':campaign_id' => $p['campaign_id'], ':data_registo' => $p['data_registo'], ':plataforma' => $p['plataforma'],
+            ':impressoes' => $p['impressoes'], ':cliques' => $p['cliques'], ':leads' => $p['leads'], ':conversoes' => $p['conversoes'],
+            ':cpc' => $p['cpc'], ':cpm' => $p['cpm'], ':spent' => $p['spent'], ':resultado' => $p['resultado'],
+        ];
     }
-    db()->prepare($sql)->execute([
-        ':id' => $p['id'] ?? null, ':campaign_id' => $p['campaign_id'], ':data_registo' => $p['data_registo'], ':plataforma' => $p['plataforma'],
-        ':impressoes' => $p['impressoes'], ':cliques' => $p['cliques'], ':leads' => $p['leads'], ':conversoes' => $p['conversoes'],
-        ':cpc' => $p['cpc'], ':cpm' => $p['cpm'], ':spent' => $p['spent'], ':resultado' => $p['resultado'],
-    ]);
+    db()->prepare($sql)->execute($params);
 }
 
 function deleteCampaign(int $id): void { db()->prepare('DELETE FROM campaigns WHERE id = ?')->execute([$id]); }
@@ -161,6 +135,8 @@ function resetSystemData(): void
     $pdo->exec('DELETE FROM traffic_metrics');
     $pdo->exec('DELETE FROM posts');
     $pdo->exec('DELETE FROM campaigns');
+    $pdo->exec('DELETE FROM channels');
+    $pdo->exec('DELETE FROM app_config');
     $pdo->commit();
 }
 
