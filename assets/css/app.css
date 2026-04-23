@@ -1,0 +1,44 @@
+body { background: #f7f8fb; }
+.kpi-card {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.kpi-card span { color: #6c757d; font-size: 0.85rem; }
+.kpi-card strong { font-size: 1.1rem; margin-top: 6px; }
+#timeline { width: 100%; overflow: hidden; }
+.timeline-grid {
+    display: grid;
+    gap: 8px;
+    border-top: 1px solid #dee2e6;
+    padding-top: 10px;
+}
+.timeline-day {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    min-height: 120px;
+    padding: 8px;
+}
+.timeline-day h6 {
+    font-size: 0.85rem;
+    color: #495057;
+    margin-bottom: 8px;
+}
+.timeline-item {
+    display: block;
+    font-size: 0.75rem;
+    border-left: 4px solid #0d6efd;
+    background: #eef4ff;
+    padding: 6px;
+    border-radius: 6px;
+    margin-bottom: 5px;
+}
+
+@media (max-width: 767px) {
+    .timeline-day { min-height: 100px; }
+}
