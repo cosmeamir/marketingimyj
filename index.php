@@ -13,7 +13,7 @@ include __DIR__ . '/includes/header.php';
 ?>
 <div class="row">
     <?php include __DIR__ . '/includes/sidebar.php'; ?>
-    <div class="col-md-10">
+    <div class="col-12 col-lg-10">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1 class="h3 mb-0">Cronograma de Marketing</h1>
             <div class="btn-group">
@@ -26,7 +26,7 @@ include __DIR__ . '/includes/header.php';
         <div class="row g-3 mb-3">
             <div class="col-md-3"><div class="kpi-card"><span>Total campanhas</span><strong><?= count($campaigns) ?></strong></div></div>
             <div class="col-md-3"><div class="kpi-card"><span>Total posts</span><strong><?= count($posts) ?></strong></div></div>
-            <div class="col-md-3"><div class="kpi-card"><span>Total gasto</span><strong>R$ <?= number_format($totalSpent, 2, ',', '.') ?></strong></div></div>
+            <div class="col-md-3"><div class="kpi-card"><span>Total gasto</span><strong>Kz <?= number_format($totalSpent, 2, ',', '.') ?></strong></div></div>
             <div class="col-md-3"><div class="kpi-card"><span>Campanhas ativas</span><strong><?= count(array_filter($campaigns, fn($c) => $c['status'] === 'Em execução')) ?></strong></div></div>
         </div>
 

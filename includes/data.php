@@ -1,143 +1,128 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+require_once __DIR__ . '/db.php';
+
+function db(): PDO
+{
+    global $pdo;
+    if (!$pdo) {
+        throw new RuntimeException('Sem ligação à base de dados. Configure o ficheiro includes/db.php');
+    }
+    return $pdo;
 }
 
-if (!isset($_SESSION['seeded'])) {
-    $_SESSION['campaigns'] = [
-        [
-            'id' => 1,
-            'titulo' => 'Lançamento Produto X',
-            'descricao' => 'Campanha de awareness + tráfego',
-            'objetivo' => 'Leads',
-            'canal' => 'Instagram',
-            'start_date' => date('Y-m-01'),
-            'end_date' => date('Y-m-18'),
-            'budget' => 2500,
-            'spent' => 1240,
-            'status' => 'Em execução',
-            'responsavel' => 'Ana Silva',
-        ],
-        [
-            'id' => 2,
-            'titulo' => 'Promoção Outono',
-            'descricao' => 'Conversão para ecommerce',
-            'objetivo' => 'Conversões',
-            'canal' => 'Google Ads',
-            'start_date' => date('Y-m-10'),
-            'end_date' => date('Y-m-28'),
-            'budget' => 4000,
-            'spent' => 1980,
-            'status' => 'Planeado',
-            'responsavel' => 'Bruno Costa',
-        ],
-    ];
+function seedIfEmpty(): void
+{
+    $pdo = db();
 
-    $_SESSION['posts'] = [
-        [
-            'id' => 1,
-            'campaign_id' => 1,
-            'titulo' => 'Teaser em Reel',
-            'tipo_conteudo' => 'Reel',
-            'plataforma' => 'Instagram',
-            'post_date' => date('Y-m-03'),
-            'post_time' => '10:30',
-            'legenda' => 'Algo grande está a chegar 👀',
-            'cta' => 'Saber mais',
-            'status' => 'Aprovado',
-            'creative_url' => '#',
-        ],
-        [
-            'id' => 2,
-            'campaign_id' => 2,
-            'titulo' => 'Banner pesquisa',
-            'tipo_conteudo' => 'Banner',
-            'plataforma' => 'Google Ads',
-            'post_date' => date('Y-m-12'),
-            'post_time' => '09:00',
-            'legenda' => 'Oferta limitada',
-            'cta' => 'Comprar agora',
-            'status' => 'Planeado',
-            'creative_url' => '#',
-        ],
-    ];
+    $usersCount = (int) $pdo->query('SELECT COUNT(*) FROM users')->fetchColumn();
+    if ($usersCount === 0) {
+        $stmt = $pdo->prepare('INSERT INTO users (username, password, role, nome, email) VALUES (?, ?, ?, ?, ?)');
+        $stmt->execute(['codigocosme', password_hash('CC.2026', PASSWORD_DEFAULT), 'admin', 'Administrador', 'admin@local']);
+        $stmt->execute(['imyj', password_hash('IMYJ.2026', PASSWORD_DEFAULT), 'cliente', 'Cliente IMYJ', 'cliente@local']);
+    }
 
-    $_SESSION['metrics'] = [
-        ['campaign_id' => 1, 'plataforma' => 'Instagram', 'impressoes' => 38000, 'cliques' => 2100, 'leads' => 240, 'conversoes' => 62, 'spent' => 1240],
-        ['campaign_id' => 2, 'plataforma' => 'Google Ads', 'impressoes' => 22000, 'cliques' => 1300, 'leads' => 160, 'conversoes' => 48, 'spent' => 1980],
-    ];
+    $campaignCount = (int) $pdo->query('SELECT COUNT(*) FROM campaigns')->fetchColumn();
+    if ($campaignCount === 0) {
+        $pdo->exec("INSERT INTO campaigns (titulo, descricao, objetivo, canal, start_date, end_date, budget, spent, status, responsavel)
+            VALUES
+            ('Lançamento Produto X', 'Campanha de awareness + tráfego', 'Leads', 'Instagram', CURDATE(), DATE_ADD(CURDATE(), INTERVAL 20 DAY), 2500000, 1240000, 'Em execução', 'Ana Silva'),
+            ('Promoção Outono', 'Conversão para ecommerce', 'Conversões', 'Google Ads', CURDATE(), DATE_ADD(CURDATE(), INTERVAL 15 DAY), 4000000, 1980000, 'Planeado', 'Bruno Costa')");
 
-    $_SESSION['seeded'] = true;
+        $pdo->exec("INSERT INTO posts (campaign_id, titulo, tipo_conteudo, plataforma, post_date, post_time, legenda, cta, status, creative_url)
+            VALUES
+            (1, 'Teaser em Reel', 'Reel', 'Instagram', CURDATE(), '10:30:00', 'Algo grande está a chegar', 'Saber mais', 'Aprovado', '#'),
+            (2, 'Banner pesquisa', 'Banner', 'Google Ads', DATE_ADD(CURDATE(), INTERVAL 1 DAY), '09:00:00', 'Oferta limitada', 'Comprar agora', 'Planeado', '#')");
+
+        $pdo->exec("INSERT INTO traffic_metrics (campaign_id, data_registo, plataforma, impressoes, cliques, leads, conversoes, cpc, cpm, spent, resultado)
+            VALUES
+            (1, CURDATE(), 'Instagram', 38000, 2100, 240, 62, 590.48, 32631.58, 1240000, 0),
+            (2, CURDATE(), 'Google Ads', 22000, 1300, 160, 48, 1523.08, 90000.00, 1980000, 0)");
+    }
 }
 
 function campaigns(): array
 {
-    return $_SESSION['campaigns'] ?? [];
+    $stmt = db()->query('SELECT * FROM campaigns ORDER BY start_date, id DESC');
+    return $stmt->fetchAll();
 }
 
 function posts(): array
 {
-    return $_SESSION['posts'] ?? [];
+    $stmt = db()->query('SELECT * FROM posts ORDER BY post_date, post_time, id DESC');
+    return $stmt->fetchAll();
 }
 
 function metrics(): array
 {
-    return $_SESSION['metrics'] ?? [];
+    $stmt = db()->query('SELECT * FROM traffic_metrics ORDER BY data_registo DESC, id DESC');
+    return $stmt->fetchAll();
 }
 
 function findCampaign(int $id): ?array
 {
-    foreach (campaigns() as $campaign) {
-        if ((int) $campaign['id'] === $id) {
-            return $campaign;
-        }
-    }
-    return null;
+    $stmt = db()->prepare('SELECT * FROM campaigns WHERE id = ? LIMIT 1');
+    $stmt->execute([$id]);
+    $item = $stmt->fetch();
+    return $item ?: null;
 }
 
 function saveCampaign(array $payload): void
 {
-    $list = campaigns();
-
-    if (!empty($payload['id'])) {
-        foreach ($list as &$item) {
-            if ((int) $item['id'] === (int) $payload['id']) {
-                $item = array_merge($item, $payload);
-            }
-        }
-    } else {
-        $payload['id'] = count($list) ? max(array_column($list, 'id')) + 1 : 1;
-        $list[] = $payload;
-    }
-
-    $_SESSION['campaigns'] = array_values($list);
+    $sql = 'INSERT INTO campaigns (titulo, descricao, objetivo, canal, start_date, end_date, budget, spent, status, responsavel)
+            VALUES (:titulo, :descricao, :objetivo, :canal, :start_date, :end_date, :budget, :spent, :status, :responsavel)';
+    $stmt = db()->prepare($sql);
+    $stmt->execute([
+        ':titulo' => $payload['titulo'],
+        ':descricao' => $payload['descricao'],
+        ':objetivo' => $payload['objetivo'],
+        ':canal' => $payload['canal'],
+        ':start_date' => $payload['start_date'],
+        ':end_date' => $payload['end_date'],
+        ':budget' => $payload['budget'],
+        ':spent' => $payload['spent'],
+        ':status' => $payload['status'],
+        ':responsavel' => $payload['responsavel'],
+    ]);
 }
 
 function deleteCampaign(int $id): void
 {
-    $_SESSION['campaigns'] = array_values(array_filter(campaigns(), fn ($c) => (int) $c['id'] !== $id));
-    $_SESSION['posts'] = array_values(array_filter(posts(), fn ($p) => (int) $p['campaign_id'] !== $id));
+    $stmt = db()->prepare('DELETE FROM campaigns WHERE id = ?');
+    $stmt->execute([$id]);
 }
 
 function savePost(array $payload): void
 {
-    $list = posts();
-
-    if (!empty($payload['id'])) {
-        foreach ($list as &$item) {
-            if ((int) $item['id'] === (int) $payload['id']) {
-                $item = array_merge($item, $payload);
-            }
-        }
-    } else {
-        $payload['id'] = count($list) ? max(array_column($list, 'id')) + 1 : 1;
-        $list[] = $payload;
-    }
-
-    $_SESSION['posts'] = array_values($list);
+    $sql = 'INSERT INTO posts (campaign_id, titulo, tipo_conteudo, plataforma, post_date, post_time, legenda, cta, status, creative_url)
+            VALUES (:campaign_id, :titulo, :tipo_conteudo, :plataforma, :post_date, :post_time, :legenda, :cta, :status, :creative_url)';
+    $stmt = db()->prepare($sql);
+    $stmt->execute([
+        ':campaign_id' => $payload['campaign_id'],
+        ':titulo' => $payload['titulo'],
+        ':tipo_conteudo' => $payload['tipo_conteudo'],
+        ':plataforma' => $payload['plataforma'],
+        ':post_date' => $payload['post_date'],
+        ':post_time' => $payload['post_time'],
+        ':legenda' => $payload['legenda'],
+        ':cta' => $payload['cta'],
+        ':status' => $payload['status'],
+        ':creative_url' => $payload['creative_url'],
+    ]);
 }
 
 function deletePost(int $id): void
 {
-    $_SESSION['posts'] = array_values(array_filter(posts(), fn ($p) => (int) $p['id'] !== $id));
+    $stmt = db()->prepare('DELETE FROM posts WHERE id = ?');
+    $stmt->execute([$id]);
 }
+
+function findUserByUsername(string $username): ?array
+{
+    $stmt = db()->prepare('SELECT * FROM users WHERE username = ? LIMIT 1');
+    $stmt->execute([$username]);
+    $user = $stmt->fetch();
+    return $user ?: null;
+}
+
+try { seedIfEmpty(); } catch (Throwable $e) { /* base não disponível */ }
+

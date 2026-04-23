@@ -6,9 +6,11 @@ body { background: #f7f8fb; }
     padding: 14px;
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 .kpi-card span { color: #6c757d; font-size: 0.85rem; }
-.kpi-card strong { font-size: 1.2rem; margin-top: 6px; }
+.kpi-card strong { font-size: 1.1rem; margin-top: 6px; }
+#timeline { width: 100%; overflow: hidden; }
 .timeline-grid {
     display: grid;
     gap: 8px;
@@ -22,7 +24,11 @@ body { background: #f7f8fb; }
     min-height: 120px;
     padding: 8px;
 }
-.timeline-day h6 { font-size: 0.85rem; color: #6c757d; }
+.timeline-day h6 {
+    font-size: 0.85rem;
+    color: #495057;
+    margin-bottom: 8px;
+}
 .timeline-item {
     display: block;
     font-size: 0.75rem;
@@ -31,4 +37,8 @@ body { background: #f7f8fb; }
     padding: 6px;
     border-radius: 6px;
     margin-bottom: 5px;
+}
+
+@media (max-width: 767px) {
+    .timeline-day { min-height: 100px; }
 }

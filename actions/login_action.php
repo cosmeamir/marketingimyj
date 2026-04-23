@@ -1,19 +1,17 @@
 <?php
 require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/data.php';
 
 $username = trim($_POST['username'] ?? '');
 $password = trim($_POST['password'] ?? '');
+$user = findUserByUsername($username);
 
-$users = [
-    'codigocosme' => ['password' => 'CC.2026', 'role' => 'admin', 'nome' => 'Administrador'],
-    'cliente' => ['password' => 'CC.2026', 'role' => 'cliente', 'nome' => 'Cliente'],
-];
-
-if (isset($users[$username]) && $users[$username]['password'] === $password) {
+if ($user && password_verify($password, $user['password'])) {
     $_SESSION['user'] = [
-        'username' => $username,
-        'nome' => $users[$username]['nome'],
-        'role' => $users[$username]['role'],
+        'id' => (int) $user['id'],
+        'username' => $user['username'],
+        'nome' => $user['nome'],
+        'role' => $user['role'],
     ];
 
     header('Location: /index.php');

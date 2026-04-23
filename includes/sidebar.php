@@ -9,12 +9,15 @@ $items = [
     '/admin/dashboard.php' => 'Configuração',
 ];
 ?>
-<div class="col-md-2">
-    <div class="list-group sticky-top">
+<div class="col-12 col-lg-2 mb-3 mb-lg-0">
+    <div class="list-group sticky-lg-top">
         <?php foreach ($items as $url => $label): ?>
             <a class="list-group-item list-group-item-action <?= str_contains($path, trim($url, '/')) ? 'active' : '' ?>" href="<?= $url ?>">
                 <?= $label ?>
             </a>
         <?php endforeach; ?>
+    </div>
+    <div class="small text-muted mt-3 px-1">
+        Desenvolvido por <a href="https://www.codigocosme.com" target="_blank" rel="noopener">Código Cosme</a>
     </div>
 </div>

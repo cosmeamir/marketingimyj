@@ -1,16 +1,18 @@
 <?php
-// Configuração base para MySQL (ajuste para o seu ambiente).
-$DB_HOST = '127.0.0.1';
-$DB_NAME = 'marketing_cronograma';
-$DB_USER = 'root';
-$DB_PASS = '';
+// Configuração para MySQL (Hostinger/local)
+$DB_HOST = getenv('DB_HOST') ?: '127.0.0.1';
+$DB_PORT = getenv('DB_PORT') ?: '3306';
+$DB_NAME = getenv('DB_NAME') ?: 'marketing_cronograma';
+$DB_USER = getenv('DB_USER') ?: 'root';
+$DB_PASS = getenv('DB_PASS') ?: '';
 
 $pdo = null;
 $dbError = null;
 
 try {
+    $dsn = "mysql:host={$DB_HOST};port={$DB_PORT};dbname={$DB_NAME};charset=utf8mb4";
     $pdo = new PDO(
-        "mysql:host={$DB_HOST};dbname={$DB_NAME};charset=utf8mb4",
+        $dsn,
         $DB_USER,
         $DB_PASS,
         [

@@ -15,14 +15,14 @@ include __DIR__ . '/../includes/header.php';
 ?>
 <div class="row">
     <?php include __DIR__ . '/../includes/sidebar.php'; ?>
-    <div class="col-md-10">
+    <div class="col-12 col-lg-10">
         <h1 class="h3"><?= htmlspecialchars($campaign['titulo']) ?></h1>
         <p><?= htmlspecialchars($campaign['descricao']) ?></p>
         <ul>
             <li>Objetivo: <?= htmlspecialchars($campaign['objetivo']) ?></li>
             <li>Responsável: <?= htmlspecialchars($campaign['responsavel']) ?></li>
-            <li>Orçamento: R$ <?= number_format((float) $campaign['budget'], 2, ',', '.') ?></li>
-            <li>Gasto atual: R$ <?= number_format((float) $campaign['spent'], 2, ',', '.') ?></li>
+            <li>Orçamento: Kz <?= number_format((float) $campaign['budget'], 2, ',', '.') ?></li>
+            <li>Gasto atual: Kz <?= number_format((float) $campaign['spent'], 2, ',', '.') ?></li>
             <li>Status: <?= htmlspecialchars($campaign['status']) ?></li>
         </ul>
 

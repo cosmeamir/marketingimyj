@@ -28,7 +28,6 @@ include __DIR__ . '/includes/header.php';
                     </div>
                     <button class="btn btn-primary w-100">Entrar</button>
                 </form>
-                <p class="small text-muted mt-3 mb-0">Teste: <strong>codigocosme / CC.2026</strong> (admin) e <strong>cliente / CC.2026</strong>.</p>
             </div>
         </div>
     </div>

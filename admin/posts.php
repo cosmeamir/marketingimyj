@@ -9,18 +9,18 @@ include __DIR__ . '/../includes/header.php';
 ?>
 <div class="row">
     <?php include __DIR__ . '/../includes/sidebar.php'; ?>
-    <div class="col-md-10">
+    <div class="col-12 col-lg-10">
         <h1 class="h3 mb-3">Posts</h1>
         <div class="card mb-3"><div class="card-body">
             <form class="row g-2" method="post" action="/actions/save_post.php">
                 <div class="col-md-3"><input name="titulo" class="form-control" placeholder="Título" required></div>
-                <div class="col-md-2"><input name="plataforma" class="form-control" placeholder="Plataforma" required></div>
-                <div class="col-md-2"><input type="date" name="post_date" class="form-control" required></div>
+                <div class="col-12 col-lg-2"><input name="plataforma" class="form-control" placeholder="Plataforma" required></div>
+                <div class="col-12 col-lg-2"><input type="date" name="post_date" class="form-control" required></div>
                 <div class="col-md-1"><input type="time" name="post_time" class="form-control" required></div>
-                <div class="col-md-2"><select class="form-select" name="campaign_id" required>
+                <div class="col-12 col-lg-2"><select class="form-select" name="campaign_id" required>
                     <?php foreach ($campaigns as $c): ?><option value="<?= (int) $c['id'] ?>"><?= htmlspecialchars($c['titulo']) ?></option><?php endforeach; ?>
                 </select></div>
-                <div class="col-md-2"><button class="btn btn-primary w-100">Novo post</button></div>
+                <div class="col-12 col-lg-2"><button class="btn btn-primary w-100">Novo post</button></div>
             </form>
         </div></div>
 
