@@ -34,6 +34,7 @@ CREATE TABLE posts (
   legenda TEXT,
   cta VARCHAR(120),
   status VARCHAR(40),
+  review_comment TEXT,
   creative_url VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (campaign_id) REFERENCES campaigns(id) ON DELETE CASCADE

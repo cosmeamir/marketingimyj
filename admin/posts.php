@@ -24,6 +24,7 @@ include __DIR__ . '/../includes/header.php';
             <form class="row g-2" method="post" action="/actions/save_post.php" enctype="multipart/form-data">
                 <input type="hidden" name="id" value="<?= (int) ($editing['id'] ?? 0) ?>">
                 <input type="hidden" name="current_creative_url" value="<?= htmlspecialchars($editing['creative_url'] ?? "") ?>">
+                <input type="hidden" name="current_review_comment" value="<?= htmlspecialchars($editing['review_comment'] ?? "") ?>">
                 <div class="col-12 col-lg-3"><input name="titulo" class="form-control" placeholder="Título" required value="<?= htmlspecialchars($editing['titulo'] ?? '') ?>"></div>
                 <div class="col-6 col-lg-2"><input name="plataforma" class="form-control" placeholder="Plataforma" required value="<?= htmlspecialchars($editing['plataforma'] ?? '') ?>"></div>
                 <div class="col-6 col-lg-2"><input type="date" name="post_date" class="form-control" required value="<?= htmlspecialchars($editing['post_date'] ?? '') ?>"></div>
@@ -42,6 +43,7 @@ include __DIR__ . '/../includes/header.php';
                 </div>
                 <div class="col-6 col-lg-1"><button class="btn btn-primary w-100"><?= $editing ? 'Salvar' : 'Novo' ?></button></div>
                 <div class="col-12"><input name="legenda" class="form-control" placeholder="Legenda" value="<?= htmlspecialchars($editing['legenda'] ?? '') ?>"></div>
+                <div class="col-12"><input class="form-control" value="<?= htmlspecialchars($editing['review_comment'] ?? '') ?>" placeholder="Comentário do cliente" readonly></div>
                 <div class="col-12 col-lg-3"><input name="creative_url" class="form-control" placeholder="URL da imagem de capa (opcional)" value="<?= htmlspecialchars($editing['creative_url'] ?? '') ?>"></div>
                 <div class="col-12 col-lg-3"><input type="file" name="cover_image" accept="image/*" class="form-control"></div>
             </form>

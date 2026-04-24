@@ -44,9 +44,10 @@ include __DIR__ . '/../includes/header.php';
                                     <input type="hidden" name="status" value="Aprovado">
                                     <button class="btn btn-sm btn-outline-success">Aprovar</button>
                                 </form>
-                                <form method="post" action="/actions/client_post_review.php">
+                                <form method="post" action="/actions/client_post_review.php" class="d-flex gap-2">
                                     <input type="hidden" name="post_id" value="<?= (int) $p['id'] ?>">
                                     <input type="hidden" name="status" value="Alteração solicitada">
+                                    <input type="text" name="comment" class="form-control form-control-sm" placeholder="Comentário" required>
                                     <button class="btn btn-sm btn-outline-warning">Solicitar alteração</button>
                                 </form>
                             </div>

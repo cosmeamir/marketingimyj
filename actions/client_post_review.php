@@ -5,9 +5,15 @@ requireRole('cliente');
 
 $postId = (int) ($_POST['post_id'] ?? 0);
 $status = trim($_POST['status'] ?? '');
+$comment = trim($_POST['comment'] ?? '');
 $allowed = ['Aprovado', 'Alteração solicitada'];
 
 if ($postId > 0 && in_array($status, $allowed, true)) {
+    if ($status === 'Alteração solicitada' && $comment === '') {
+        header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? '/client/overview.php') . '#comment-required');
+        exit;
+    }
+
     $post = findPost($postId);
     if ($post) {
         savePost([
@@ -21,6 +27,7 @@ if ($postId > 0 && in_array($status, $allowed, true)) {
             'legenda' => $post['legenda'],
             'cta' => $post['cta'],
             'status' => $status,
+            'review_comment' => $status === 'Alteração solicitada' ? $comment : '',
             'creative_url' => $post['creative_url'],
         ]);
     }

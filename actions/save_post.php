@@ -14,6 +14,7 @@ if ($isDesign && $postId <= 0) {
 
 $creativeUrl = trim($_POST['creative_url'] ?? '');
 $currentCreative = trim($_POST['current_creative_url'] ?? '');
+$currentReview = trim($_POST['current_review_comment'] ?? '');
 
 if (!empty($_FILES['cover_image']['tmp_name']) && is_uploaded_file($_FILES['cover_image']['tmp_name'])) {
     $ext = strtolower(pathinfo($_FILES['cover_image']['name'], PATHINFO_EXTENSION));
@@ -53,6 +54,7 @@ savePost([
     'legenda' => trim($_POST['legenda'] ?? ''),
     'cta' => trim($_POST['cta'] ?? ''),
     'status' => $status,
+    'review_comment' => $currentReview,
     'creative_url' => $creativeUrl,
 ]);
 

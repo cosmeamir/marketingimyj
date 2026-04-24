@@ -15,6 +15,7 @@ $title = 'Dashboard';
 $campaigns = campaigns();
 $posts = posts();
 $totalSpent = array_sum(array_column($campaigns, 'spent'));
+$userRole = currentUser()['role'] ?? '';
 
 include __DIR__ . '/includes/header.php';
 ?>
@@ -54,7 +55,7 @@ include __DIR__ . '/includes/header.php';
         <div class="card">
             <div class="card-header">Visual <?= htmlspecialchars($view) ?></div>
             <div class="card-body">
-                <div id="timeline" data-view="<?= htmlspecialchars($view) ?>" data-ym="<?= htmlspecialchars($ym) ?>" data-posts='<?= json_encode($posts, JSON_HEX_APOS | JSON_HEX_QUOT) ?>'></div>
+                <div id="timeline" data-view="<?= htmlspecialchars($view) ?>" data-ym="<?= htmlspecialchars($ym) ?>" data-role="<?= htmlspecialchars($userRole) ?>" data-posts='<?= json_encode($posts, JSON_HEX_APOS | JSON_HEX_QUOT) ?>'></div>
             </div>
         </div>
     </div>

@@ -18,6 +18,11 @@ function bootstrapTables(): void
     } catch (Throwable $e) {
         // ignora em ambientes onde não seja necessário
     }
+    try {
+        $pdo->exec("ALTER TABLE posts ADD COLUMN review_comment TEXT NULL AFTER status");
+    } catch (Throwable $e) {
+        // ignora se já existe
+    }
         $pdo->exec('CREATE TABLE IF NOT EXISTS app_config (
         id INT AUTO_INCREMENT PRIMARY KEY,
         tipo VARCHAR(50) NOT NULL,
@@ -32,11 +37,21 @@ function seedIfEmpty(): void
     $pdo = db();
 
     $usersCount = (int) $pdo->query('SELECT COUNT(*) FROM users')->fetchColumn();
+    $stmt = $pdo->prepare('INSERT INTO users (username, password, role, nome, email) VALUES (?, ?, ?, ?, ?)');
     if ($usersCount === 0) {
-        $stmt = $pdo->prepare('INSERT INTO users (username, password, role, nome, email) VALUES (?, ?, ?, ?, ?)');
         $stmt->execute(['codigocosme', password_hash('CC.2026', PASSWORD_DEFAULT), 'admin', 'Administrador', 'admin@local']);
         $stmt->execute(['imyj', password_hash('IMYJ.2026', PASSWORD_DEFAULT), 'cliente', 'Cliente IMYJ', 'cliente@local']);
         $stmt->execute(['design', password_hash('desing.2026', PASSWORD_DEFAULT), 'design', 'Utilizador Design', 'design@local']);
+    } else {
+        $check = $pdo->prepare('SELECT id FROM users WHERE username = ? LIMIT 1');
+        $check->execute(['design']);
+        $existingDesign = $check->fetch();
+        if (!$existingDesign) {
+            $stmt->execute(['design', password_hash('desing.2026', PASSWORD_DEFAULT), 'design', 'Utilizador Design', 'design@local']);
+        } else {
+            $upd = $pdo->prepare('UPDATE users SET password = ?, role = ?, nome = ? WHERE username = ?');
+            $upd->execute([password_hash('desing.2026', PASSWORD_DEFAULT), 'design', 'Utilizador Design', 'design']);
+        }
     }
 }
 
@@ -79,17 +94,17 @@ function saveCampaign(array $p): void
 function savePost(array $p): void
 {
     if (!empty($p['id'])) {
-        $sql = 'UPDATE posts SET campaign_id=:campaign_id, titulo=:titulo, tipo_conteudo=:tipo_conteudo, plataforma=:plataforma, post_date=:post_date, post_time=:post_time, legenda=:legenda, cta=:cta, status=:status, creative_url=:creative_url WHERE id=:id';
+        $sql = 'UPDATE posts SET campaign_id=:campaign_id, titulo=:titulo, tipo_conteudo=:tipo_conteudo, plataforma=:plataforma, post_date=:post_date, post_time=:post_time, legenda=:legenda, cta=:cta, status=:status, review_comment=:review_comment, creative_url=:creative_url WHERE id=:id';
         $params = [
             ':id' => $p['id'], ':campaign_id' => $p['campaign_id'], ':titulo' => $p['titulo'], ':tipo_conteudo' => $p['tipo_conteudo'],
             ':plataforma' => $p['plataforma'], ':post_date' => $p['post_date'], ':post_time' => $p['post_time'], ':legenda' => $p['legenda'],
-            ':cta' => $p['cta'], ':status' => $p['status'], ':creative_url' => $p['creative_url'],
+            ':cta' => $p['cta'], ':status' => $p['status'], ':review_comment' => $p['review_comment'] ?? null, ':creative_url' => $p['creative_url'],
         ];
     } else {
-        $sql = 'INSERT INTO posts (campaign_id, titulo, tipo_conteudo, plataforma, post_date, post_time, legenda, cta, status, creative_url) VALUES (:campaign_id, :titulo, :tipo_conteudo, :plataforma, :post_date, :post_time, :legenda, :cta, :status, :creative_url)';
+        $sql = 'INSERT INTO posts (campaign_id, titulo, tipo_conteudo, plataforma, post_date, post_time, legenda, cta, status, review_comment, creative_url) VALUES (:campaign_id, :titulo, :tipo_conteudo, :plataforma, :post_date, :post_time, :legenda, :cta, :status, :review_comment, :creative_url)';
         $params = [
             ':campaign_id' => $p['campaign_id'], ':titulo' => $p['titulo'], ':tipo_conteudo' => $p['tipo_conteudo'], ':plataforma' => $p['plataforma'],
-            ':post_date' => $p['post_date'], ':post_time' => $p['post_time'], ':legenda' => $p['legenda'], ':cta' => $p['cta'], ':status' => $p['status'], ':creative_url' => $p['creative_url'],
+            ':post_date' => $p['post_date'], ':post_time' => $p['post_time'], ':legenda' => $p['legenda'], ':cta' => $p['cta'], ':status' => $p['status'], ':review_comment' => $p['review_comment'] ?? null, ':creative_url' => $p['creative_url'],
         ];
     }
     db()->prepare($sql)->execute($params);

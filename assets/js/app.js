@@ -4,6 +4,7 @@
 
     const view = timeline.dataset.view || 'month';
     const posts = JSON.parse(timeline.dataset.posts || '[]');
+    const role = timeline.dataset.role || ''; 
     const ym = timeline.dataset.ym || new Date().toISOString().slice(0, 7);
     const [year, month] = ym.split('-').map(Number);
     const baseDate = new Date(year, (month || 1) - 1, 1);
@@ -89,6 +90,21 @@
                                     <li class="list-group-item px-0"><strong>CTA:</strong> ${post.cta || '-'}</li>
                                     <li class="list-group-item px-0"><strong>Legenda:</strong> ${post.legenda || '-'}</li>
                                 </ul>
+                                ${role === 'cliente' ? `
+                                <div class="mt-3 d-grid gap-2">
+                                    <form method="post" action="/actions/client_post_review.php" class="d-flex gap-2 flex-wrap">
+                                        <input type="hidden" name="post_id" value="${post.id || ''}">
+                                        <input type="hidden" name="status" value="Aprovado">
+                                        <button class="btn btn-sm btn-outline-success">Aprovar</button>
+                                    </form>
+                                    <form method="post" action="/actions/client_post_review.php" class="d-flex gap-2 flex-wrap">
+                                        <input type="hidden" name="post_id" value="${post.id || ''}">
+                                        <input type="hidden" name="status" value="Alteração solicitada">
+                                        <input type="text" name="comment" class="form-control form-control-sm" placeholder="Comentário da alteração" required>
+                                        <button class="btn btn-sm btn-outline-warning">Solicitar alteração</button>
+                                    </form>
+                                </div>` : ''}
+
                             </div>
                         </div>
                     </div>
