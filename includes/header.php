@@ -11,19 +11,22 @@ $user = $_SESSION['user'] ?? null;
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= htmlspecialchars($title ?? 'Cronograma de Marketing') ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="/assets/css/app.css" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="/assets/img/logo-imyj.svg">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/index.php">Cronograma Marketing</a>
-        <div class="d-flex text-white small align-items-center gap-3">
+<div class="app-shell">
+    <header class="topbar">
+        <div class="d-flex align-items-center gap-2">
+            <img src="/assets/img/logo-imyj.svg" alt="logo" class="topbar-logo">
+            <strong>Cronograma Marketing</strong>
+        </div>
+        <div class="d-flex align-items-center gap-3 small">
             <?php if ($user): ?>
                 <span><?= htmlspecialchars($user['nome']) ?> (<?= htmlspecialchars($user['role']) ?>)</span>
-                <a href="/logout.php" class="btn btn-sm btn-outline-light">Sair</a>
+                <a href="/logout.php" class="btn btn-sm btn-outline-secondary">Sair</a>
             <?php endif; ?>
         </div>
-    </div>
-</nav>
-<div class="container-fluid py-3">
+    </header>
+    <div class="container-fluid py-3">

@@ -4,34 +4,35 @@ $role = $_SESSION['user']['role'] ?? '';
 
 $itemsByRole = [
     'admin' => [
-        '/index.php' => 'Dashboard',
-        '/admin/campaigns.php' => 'Campanhas',
-        '/admin/posts.php' => 'Posts',
-        '/admin/metrics.php' => 'Métricas',
-        '/client/overview.php' => 'Visão Cliente',
-        '/admin/dashboard.php' => 'Configuração',
+        ['/index.php', 'Dashboard', 'bi-speedometer2'],
+        ['/admin/campaigns.php', 'Campanhas', 'bi-megaphone'],
+        ['/admin/posts.php', 'Posts', 'bi-image'],
+        ['/admin/metrics.php', 'Métricas', 'bi-bar-chart'],
+        ['/client/overview.php', 'Visão Cliente', 'bi-eye'],
+        ['/admin/dashboard.php', 'Configuração', 'bi-gear'],
     ],
     'design' => [
-        '/index.php' => 'Dashboard',
-        '/admin/posts.php' => 'Posts',
+        ['/index.php', 'Dashboard', 'bi-speedometer2'],
+        ['/admin/posts.php', 'Posts', 'bi-image'],
     ],
     'cliente' => [
-        '/index.php' => 'Dashboard',
-        '/client/overview.php' => 'Minhas campanhas',
+        ['/index.php', 'Dashboard', 'bi-speedometer2'],
+        ['/client/overview.php', 'Minhas campanhas', 'bi-kanban'],
     ],
 ];
 
-$items = $itemsByRole[$role] ?? ['/index.php' => 'Dashboard'];
+$items = $itemsByRole[$role] ?? [['/index.php', 'Dashboard', 'bi-speedometer2']];
 ?>
 <div class="col-12 col-lg-2 mb-3 mb-lg-0">
-    <div class="list-group sticky-lg-top">
-        <?php foreach ($items as $url => $label): ?>
-            <a class="list-group-item list-group-item-action <?= str_contains($path, trim($url, '/')) ? 'active' : '' ?>" href="<?= $url ?>">
-                <?= $label ?>
+    <aside class="sidebar-panel">
+        <?php foreach ($items as [$url, $label, $icon]): ?>
+            <a class="side-link <?= str_contains($path, trim($url, '/')) ? 'active' : '' ?>" href="<?= $url ?>">
+                <i class="bi <?= $icon ?>"></i>
+                <span><?= $label ?></span>
             </a>
         <?php endforeach; ?>
-    </div>
-    <div class="small text-muted mt-3 px-1">
-        Desenvolvido por <a href="https://www.codigocosme.com" target="_blank" rel="noopener">Código Cosme</a>
-    </div>
+        <div class="sidebar-footer">
+            Desenvolvido por <a href="https://www.codigocosme.com" target="_blank" rel="noopener">Código Cosme</a>
+        </div>
+    </aside>
 </div>
