@@ -37,18 +37,18 @@ include __DIR__ . '/../includes/header.php';
                             <span class="small text-muted">- <?= htmlspecialchars($p['post_date']) ?> <?= htmlspecialchars($p['post_time']) ?> (<?= htmlspecialchars($p['plataforma']) ?>)</span>
                             <div><span class="badge text-bg-secondary mt-1"><?= htmlspecialchars($p['status']) ?></span></div>
                         </div>
-                        <?php if (($user['role'] ?? '') === 'cliente'): ?>
-                            <div class="d-flex gap-2">
-                                <form method="post" action="/actions/client_post_review.php">
+                        <?php if (($user['role'] ?? '') === 'cliente' && ($p['status'] ?? '') !== 'Aprovado'): ?>
+                            <div class="d-flex flex-column gap-2 w-100" style="min-width:280px; max-width:560px;">
+                                <form method="post" action="/actions/client_post_review.php" class="d-flex gap-2 flex-wrap">
                                     <input type="hidden" name="post_id" value="<?= (int) $p['id'] ?>">
                                     <input type="hidden" name="status" value="Aprovado">
                                     <button class="btn btn-sm btn-outline-success">Aprovar</button>
                                 </form>
-                                <form method="post" action="/actions/client_post_review.php" class="d-flex gap-2">
+                                <form method="post" action="/actions/client_post_review.php" class="d-flex flex-column gap-2">
                                     <input type="hidden" name="post_id" value="<?= (int) $p['id'] ?>">
                                     <input type="hidden" name="status" value="Alteração solicitada">
-                                    <input type="text" name="comment" class="form-control form-control-sm" placeholder="Comentário" required>
-                                    <button class="btn btn-sm btn-outline-warning">Solicitar alteração</button>
+                                    <textarea name="comment" class="form-control form-control-sm" rows="3" placeholder="Comentário da alteração" required></textarea>
+                                    <button class="btn btn-sm btn-outline-warning align-self-start">Solicitar alteração</button>
                                 </form>
                             </div>
                         <?php endif; ?>

@@ -90,7 +90,7 @@
                                     <li class="list-group-item px-0"><strong>CTA:</strong> ${post.cta || '-'}</li>
                                     <li class="list-group-item px-0"><strong>Legenda:</strong> ${post.legenda || '-'}</li>
                                 </ul>
-                                ${role === 'cliente' ? `
+                                ${role === 'cliente' && (post.status || '') !== 'Aprovado' ? `
                                 <div class="mt-3 d-grid gap-2">
                                     <form method="post" action="/actions/client_post_review.php" class="d-flex gap-2 flex-wrap">
                                         <input type="hidden" name="post_id" value="${post.id || ''}">
@@ -100,7 +100,7 @@
                                     <form method="post" action="/actions/client_post_review.php" class="d-flex gap-2 flex-wrap">
                                         <input type="hidden" name="post_id" value="${post.id || ''}">
                                         <input type="hidden" name="status" value="Alteração solicitada">
-                                        <input type="text" name="comment" class="form-control form-control-sm" placeholder="Comentário da alteração" required>
+                                        <textarea name="comment" class="form-control form-control-sm" rows="4" placeholder="Comentário da alteração" required></textarea>
                                         <button class="btn btn-sm btn-outline-warning">Solicitar alteração</button>
                                     </form>
                                 </div>` : ''}
